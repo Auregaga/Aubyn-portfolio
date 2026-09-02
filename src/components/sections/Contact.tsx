@@ -19,49 +19,64 @@ export default function Contact({ contact }: ContactProps) {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // 标题入场
-      gsap.from('.contact-left', {
-        opacity: 0,
-        x: -30,
-        duration: 0.8,
-        ease: 'power3.out',
+      // 先设初始状态（透明+偏移），避免 from 的初始渲染闪烁问题
+      gsap.set('.contact-left', { opacity: 0, x: -30 });
+      gsap.set('.contact-card, .contact-card-github', { opacity: 0, y: 24 });
+      gsap.set('.contact-footer', { opacity: 0 });
+
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 75%',
+          start: 'top 85%',
           once: true,
+          // 保险：如果元素已经在视口中，立即播放
+          toggleActions: 'play none none none',
         },
       });
 
-      // 卡片 stagger 入场
-      const cards = gsap.utils.toArray('.contact-card, .contact-card-github');
-      gsap.from(cards, {
-        opacity: 0,
-        y: 24,
+      tl.to('.contact-left', {
+        opacity: 1,
+        x: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+      })
+      .to('.contact-card, .contact-card-github', {
+        opacity: 1,
+        y: 0,
         duration: 0.5,
         stagger: 0.08,
         ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.contact-grid',
-          start: 'top 80%',
-          once: true,
-        },
-      });
-
-      // 底部入场
-      gsap.from('.contact-footer', {
-        opacity: 0,
+      }, '-=0.5')
+      .to('.contact-footer', {
+        opacity: 1,
         duration: 0.6,
-        delay: 0.2,
         ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 65%',
-          once: true,
-        },
-      });
+      }, '-=0.3');
+
+      // 兜底：元素已经在视口内时，手动触发
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        if (rect.top < window.innerHeight * 0.85) {
+          tl.play();
+        }
+      }
     }, sectionRef);
 
-    return () => ctx.revert();
+    // 兜底：2秒后如果还是透明的，强制显示（防止 ScrollTrigger 未绑定）
+    const fallbackTimer = setTimeout(() => {
+      gsap.to('.contact-left, .contact-card, .contact-card-github, .contact-footer', {
+        opacity: 1,
+        y: 0,
+        x: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+      });
+    }, 2500);
+
+    return () => {
+      ctx.revert();
+      clearTimeout(fallbackTimer);
+    };
   }, []);
 
   const handleCopy = async (text: string, field: string) => {
