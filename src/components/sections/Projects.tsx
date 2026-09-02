@@ -13,6 +13,57 @@ interface ProjectsSectionProps {
 
 gsap.registerPlugin(ScrollTrigger);
 
+// 项目媒体子组件
+function ProjectMedia({ project }: { project: ShowcaseProject }) {
+  const handleClick = () => {
+    if (project.link) {
+      window.open(project.link, '_blank');
+    }
+  };
+
+  return (
+    <div
+      className={`relative z-10 max-w-[50%] ${
+        project.mediaLayout === 'left-large'
+          ? 'mr-auto ml-[8%]'
+          : project.mediaLayout === 'right-large'
+            ? 'ml-auto mr-[8%] mt-[5vh]'
+            : 'mx-auto'
+      } ${project.link ? 'cursor-pointer group' : ''}`}
+      onClick={handleClick}
+    >
+      {project.mediaType === 'image' && (
+        <div className="relative">
+          <img
+            src={project.mediaSrc}
+            alt={project.name}
+            className="max-h-[50vh] w-auto object-contain transition-all duration-500 ease-out group-hover:scale-[1.02] group-hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] rounded-lg"
+          />
+          {/* 右下角 AI 生成水印遮挡（与页面黑背景同色） */}
+          <div className="absolute bottom-0 right-0 w-[120px] h-[40px] bg-black pointer-events-none rounded-br-lg" />
+          {project.link && (
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-lg">
+              <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-white bg-black/60 px-4 py-2 backdrop-blur-sm">
+                View Project →
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+      {project.mediaType === 'video' && (
+        <video
+          src={project.mediaSrc}
+          className="max-h-[55vh] w-auto"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+      )}
+    </div>
+  );
+}
+
 export default function ProjectsSection({ projects }: ProjectsSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
@@ -218,50 +269,7 @@ export default function ProjectsSection({ projects }: ProjectsSectionProps) {
               key={project.id}
               className="project-slide absolute w-full h-full flex items-center justify-center"
             >
-              {/* 媒体内容 */}
-              <div
-                className={`relative z-10 max-w-[50%] ${
-                  project.mediaLayout === 'left-large'
-                    ? 'mr-auto ml-[8%]'
-                    : project.mediaLayout === 'right-large'
-                      ? 'ml-auto mr-[8%] mt-[5vh]'
-                      : 'mx-auto'
-                } ${project.link ? 'cursor-pointer group' : ''}`}
-                onClick={() => {
-                  if (project.link) {
-                    window.open(project.link, '_blank');
-                  }
-                }}
-              >
-                {project.mediaType === 'image' && (
-                  <div className="relative">
-                    <img
-                      src={project.mediaSrc}
-                      alt={project.name}
-                      className="max-h-[50vh] w-auto object-contain transition-all duration-500 ease-out group-hover:scale-[1.02] group-hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)] rounded-lg"
-                    />
-                    {/* 右下角 AI 生成水印遮挡（与页面黑背景同色） */}
-                    <div className="absolute bottom-0 right-0 w-[120px] h-[40px] bg-black pointer-events-none rounded-br-lg" />
-                    {project.link && (
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-lg">
-                        <span className="font-mono text-[12px] uppercase tracking-[0.2em] text-white bg-black/60 px-4 py-2 backdrop-blur-sm">
-                          View Project →
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {project.mediaType === 'video' && (
-                  <video
-                    src={project.mediaSrc}
-                    className="max-h-[55vh] w-auto"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                  />
-                )}
-              </div>
+              <ProjectMedia project={project} />
             </div>
           ))}
         </div>

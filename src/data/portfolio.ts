@@ -1,6 +1,20 @@
 // src/data/portfolio.ts
 import type { PortfolioData } from './types';
 
+// basePath：GitHub Pages 子路径部署时需要前缀
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
+function p(path: string): string {
+  if (!BASE_PATH) return path;
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('#') || path.startsWith('mailto:') || path.startsWith('tel:')) {
+    return path;
+  }
+  if (path.startsWith('/')) {
+    return BASE_PATH + path;
+  }
+  return BASE_PATH + '/' + path;
+}
+
 export const portfolioData: PortfolioData = {
   profile: {
     name: '嗨！我是钱一鹏！',
@@ -14,7 +28,7 @@ export const portfolioData: PortfolioData = {
         { text: '产出 Demo 让用户的隐形需求浮出水面，用 Demo 演示打动用户。', variant: 'primary' },
       ],
     },
-    avatar: '/portrait.jpg',
+    avatar: p('/portrait.jpg'),
     bio: '专注于 AI 产品设计与用户体验研究，擅长将复杂技术转化为用户可感知的价值。曾在多家科技公司实习，参与过 3 款 AI 产品从 0 到 1 的落地，累计服务用户超 10 万。相信好的产品始于对人的深度理解。',
     bioParagraphs: [
       '我是钱一鹏 Aubyn。一个热爱于挖掘有趣的 agent 项目并将其落地的产品人。',
@@ -87,11 +101,11 @@ export const portfolioData: PortfolioData = {
       description:
         'AI工牌不执行任务，它站在「Agent 想做的事」和「电脑真正发生的事」之间——审查 Agent 提交的每一步操作计划，按风险 L0–L4 分级，决定放行、要确认、还是直接拦下。面向每一个「让 AI 帮忙操作电脑/文件」的普通用户。',
       mediaType: 'image',
-      mediaSrc: '/projects/cover-ai-bedge.jpg',
+      mediaSrc: p('/projects/cover-ai-bedge.jpg'),
       mediaLayout: 'right-large',
       hasStaircase: false,
       scrollNum: 1,
-      link: '/projects/ai-bedge/',
+      link: p('/projects/ai-bedge/'),
     },
     {
       id: 'action-to-skill',
@@ -99,11 +113,11 @@ export const portfolioData: PortfolioData = {
       description:
         '「做一遍就会」是给不懂代码、不写 Prompt 的普通人做的工具。你在浏览器里把重复操作示范一遍，AI 自动把它抽象成可重复执行的 Skill。之后填参数、点执行，浏览器自动把整件事做完。',
       mediaType: 'image',
-      mediaSrc: '/projects/cover-action-to-skill.jpg',
+      mediaSrc: p('/projects/cover-action-to-skill.jpg'),
       mediaLayout: 'right-large',
       hasStaircase: false,
       scrollNum: 2,
-      link: '/projects/action-to-skill/',
+      link: p('/projects/action-to-skill/'),
     },
     {
       id: 'pcb-copilot',
@@ -111,11 +125,11 @@ export const portfolioData: PortfolioData = {
       description:
         '源于泰莫芯半导体线缆组件产线的真实痛点。我在做产品期间，发现结构工程师手工编制 LM512 等连接器的线序表耗时久、容易出错，于是主导做了 v1 版本并落地到内部使用。v2 是在 v1 基础上，用多 Agent 架构做的能力拓展版。系统用 Vue 3 + Express 搭建前端界面，后端通过 SSE 流式推送 Agent 执行状态，工程师上传连接器图纸 PDF，解析、审核、异常处理三个 Agent 分工协作，产出打线加工和 ATE 导通测试用的线序表（Excel / JSON）。质检不到 100 分，系统拒绝交付。',
       mediaType: 'image',
-      mediaSrc: '/projects/cover-pcb-copilot.jpg',
+      mediaSrc: p('/projects/cover-pcb-copilot.jpg'),
       mediaLayout: 'right-large',
       hasStaircase: false,
       scrollNum: 3,
-      link: '/projects/pcb-copilot/',
+      link: p('/projects/pcb-copilot/'),
     },
     {
       id: 'lifting-platform',
@@ -123,7 +137,7 @@ export const portfolioData: PortfolioData = {
       description:
         '基于上海地铁一线维护场景深度调研，量化分析用户痛点，识别"体积大、重量高、搬运困难"三大核心问题，主导产品功能架构设计与三大核心模块拆解，推动材料选型与受力仿真优化。产品顺利交付并通过现场验证，整机重量较原有设备降低约35%，空间利用率提升20%，获上海地铁方面认可。',
       mediaType: 'image',
-      mediaSrc: '/projects/cover-lifting-platform.jpg',
+      mediaSrc: p('/projects/cover-lifting-platform.jpg'),
       mediaLayout: 'right-large',
       hasStaircase: false,
       scrollNum: 4,
@@ -134,7 +148,7 @@ export const portfolioData: PortfolioData = {
       description:
         '针对长路线公路维护中人工作业密度低、人力成本高的问题，主导5人多专业团队完成需求拆解与功能设计，明确机械底盘、控制模块、视觉传感器三大技术路径。制作等比原型车实地测试并调整结构设计，项目顺利结题，获2024年"新迪杯"创新创业大赛二等奖、2025年大学生创新大赛/互联网+三等奖。',
       mediaType: 'image',
-      mediaSrc: '/projects/cover-maintenance-vehicle.png',
+      mediaSrc: p('/projects/cover-maintenance-vehicle.png'),
       mediaLayout: 'right-large',
       hasStaircase: false,
       scrollNum: 5,
@@ -145,11 +159,11 @@ export const portfolioData: PortfolioData = {
       description:
         '想做一个人人能用的实时语音层——用户自由接入自己的 LLM API 和音色 API，产品只做交互编排和体验打磨。V1 想零成本纯前端，4 小时后因 CORS 毙掉；V2 找到了端到端实时语音 API 的路径，但零成本做不到，需要至少一个 Edge 中继。',
       mediaType: 'image',
-      mediaSrc: '/projects/cover-voice-layer.jpg',
+      mediaSrc: p('/projects/cover-voice-layer.jpg'),
       mediaLayout: 'right-large',
       hasStaircase: false,
       scrollNum: 6,
-      link: '/projects/voice-layer/',
+      link: p('/projects/voice-layer/'),
     },
   ],
   experiences: [
@@ -191,7 +205,7 @@ export const portfolioData: PortfolioData = {
         '跨部门协同&效果验证：在研发/测试多部门推广AI工具，持续收集一线使用反馈，完成多轮Prompt调优与流程逻辑迭代；量化AI工具落地价值，将单次线序表处理时间压缩80%。',
         '全流程需求落地：对接客户技术诉求，完成需求拆解转化输出PRD，组织3轮内部研发评审+多轮客户评审；主导512PIN连接器从需求定义、方案评估到试产的全流程。',
       ],
-      image: '/internships/intern-1.jpg',
+      image: p('/internships/intern-1.jpg'),
     },
     {
       id: 'intern-2',
@@ -206,7 +220,7 @@ export const portfolioData: PortfolioData = {
         '数据进度预警与优化：通过数据透视表对历史完成数据进行工作积压识别，提前预警风险任务；持续优化任务分配策略，团队周度进度稳定超预期约5%。',
         '部门数据确认与汇报：统筹组内实时数据录入，定期输出进度报告，确保数据信息同步准确，基于数据向项目经理进行汇报。',
       ],
-      image: '/internships/intern-2.jpg',
+      image: p('/internships/intern-2.jpg'),
     },
   ],
   skills: [
@@ -266,64 +280,64 @@ export const portfolioData: PortfolioData = {
       id: 'life-1',
       title: '东京塔下',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image1.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image1.jpeg'),
     },
     {
       id: 'life-2',
       title: '我的第一只宠物，还想听他半夜跑跑轮把我吵醒',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image2.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image2.jpeg'),
     },
     {
       id: 'life-3',
       title: '当猫奴真正去养一只小茂',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image3.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image3.jpeg'),
     },
     {
       id: 'life-4',
       title: '我不懂什么是蓝调，但我知道这是我在北海道为数不多动手记录下来的美景之一',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image4.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image4.jpeg'),
     },
     {
       id: 'life-5',
       title: '南方小朋友制作的第一个雪喵',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image5.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image5.jpeg'),
     },
     {
       id: 'life-6',
       title: '人生第一次因为一项运动结实这么多伙伴',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image6.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image6.jpeg'),
     },
     {
       id: 'life-7',
       title: '上辈子没吃的美食在顺德给我补上了',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image7.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image7.jpeg'),
     },
     {
       id: 'life-8',
       title: '还有几个暑假能再复现大阪的那个夏天？',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image8.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image8.jpeg'),
     },
     {
       id: 'life-9',
       title: '和身后的老家伙刚完成河口湖35km骑行，可靠旅行伙伴也不一定非得是人',
       author: 'Aubyn',
-      avatar: '/life/avatar.jpg',
-      image: '/life/image9.jpeg',
+      avatar: p('/life/avatar.jpg'),
+      image: p('/life/image9.jpeg'),
     },
   ],
 };

@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
   output: "export",
   // GitHub Pages 项目路径
   basePath,
+  // 环境变量暴露给客户端
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   // 静态导出时禁用图片优化
   images: {
     unoptimized: true,
