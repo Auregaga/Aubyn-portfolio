@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import type { LifePost } from '@/src/data/types';
@@ -11,8 +11,35 @@ interface LifeSectionProps {
   posts: LifePost[];
 }
 
+// 将 posts 平均分配到各列，保持瀑布流高度尽量均匀
+function splitIntoColumns(posts: LifePost[], cols: number): LifePost[][] {
+  const columns: LifePost[][] = Array.from({ length: cols }, () => []);
+  const heights: number[] = Array(cols).fill(0);
+
+  for (const post of posts) {
+    const minIdx = heights.indexOf(Math.min(...heights));
+    columns[minIdx].push(post);
+    heights[minIdx] += 1;
+  }
+
+  return columns;
+}
+
 export default function LifeSection({ posts }: LifeSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
+  const [colCount, setColCount] = useState(2); // 默认 2 列（移动端）
+
+  // 检测窗口宽度决定列数
+  useEffect(() => {
+    const updateCols = () => {
+      setColCount(window.innerWidth >= 768 ? 3 : 2);
+    };
+    updateCols();
+    window.addEventListener('resize', updateCols);
+    return () => window.removeEventListener('resize', updateCols);
+  }, []);
+
+  const columns = splitIntoColumns(posts, colCount);
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -70,7 +97,7 @@ export default function LifeSection({ posts }: LifeSectionProps) {
       id="life"
       className="w-full py-24 md:py-32 bg-[#fafafa] relative"
     >
-      <div className="max-w-[960px] mx-auto px-3 md:px-4">
+      <div className="max-w-[980px] mx-auto px-4 md:px-6">
         {/* 标题区 */}
         <div className="text-center mb-10 md:mb-14">
           <p className="text-[12px] md:text-[13px] text-[#999] tracking-[0.2em] uppercase mb-3 font-[Noto Sans CJK SC,system-ui,sans-serif]">
@@ -84,57 +111,61 @@ export default function LifeSection({ posts }: LifeSectionProps) {
           </p>
         </div>
 
-        {/* 瀑布流网格 — 小红书风格 */}
-        <div className="xhs-grid columns-2 md:columns-3 gap-3 md:gap-4">
-          {posts.map((post) => (
-            <div
-              key={post.id}
-              className="xhs-card break-inside-avoid mb-3 md:mb-4 bg-white rounded-[8px] overflow-hidden
-                shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]
-                transition-all duration-300 cursor-pointer group"
-            >
-              {/* 图片区 */}
-              <div className="relative w-full overflow-hidden bg-[#f0f0f0]">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-auto object-cover block group-hover:scale-[1.03] transition-transform duration-500 ease-out"
-                  loading="lazy"
-                />
-              </div>
-
-              {/* 文字区 — 白框增宽，减少左右内边距 */}
-              <div className="px-2.5 py-2.5 md:px-3 md:py-3">
-                {/* 标题 — 两行截断 */}
-                <p
-                  className="text-[13px] md:text-[13.5px] leading-[1.45] text-[#222]
-                    line-clamp-2 mb-2.5
-                    font-[Noto Sans CJK SC,system-ui,sans-serif]"
-                  style={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                  }}
+        {/* 瀑布流网格 — 小红书风格，flex 多列布局确保居中 */}
+        <div className="xhs-grid flex justify-center gap-3 md:gap-4">
+          {columns.map((col, colIdx) => (
+            <div key={colIdx} className="flex-1 max-w-[300px] flex flex-col gap-3 md:gap-4">
+              {col.map((post) => (
+                <div
+                  key={post.id}
+                  className="xhs-card bg-white rounded-[8px] overflow-hidden
+                    shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]
+                    transition-all duration-300 cursor-pointer group"
                 >
-                  {post.title}
-                </p>
+                  {/* 图片区 */}
+                  <div className="relative w-full overflow-hidden bg-[#f0f0f0]">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-auto object-cover block group-hover:scale-[1.03] transition-transform duration-500 ease-out"
+                      loading="lazy"
+                    />
+                  </div>
 
-                {/* 作者信息 — 不遮挡头像和用户名 */}
-                <div className="flex items-center gap-1.5">
-                  <img
-                    src={post.avatar}
-                    alt={post.author}
-                    className="w-[18px] h-[18px] md:w-[20px] md:h-[20px] rounded-full object-cover flex-shrink-0"
-                  />
-                  <span
-                    className="text-[11px] md:text-[12px] text-[#999] truncate
-                      font-[Noto Sans CJK SC,system-ui,sans-serif]"
-                  >
-                    {post.author}
-                  </span>
+                  {/* 文字区 */}
+                  <div className="px-2.5 py-2.5 md:px-3 md:py-3">
+                    {/* 标题 — 两行截断 */}
+                    <p
+                      className="text-[13px] md:text-[13.5px] leading-[1.45] text-[#222]
+                        mb-2.5
+                        font-[Noto Sans CJK SC,system-ui,sans-serif]"
+                      style={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {post.title}
+                    </p>
+
+                    {/* 作者信息 */}
+                    <div className="flex items-center gap-1.5">
+                      <img
+                        src={post.avatar}
+                        alt={post.author}
+                        className="w-[18px] h-[18px] md:w-[20px] md:h-[20px] rounded-full object-cover flex-shrink-0"
+                      />
+                      <span
+                        className="text-[11px] md:text-[12px] text-[#999] truncate
+                          font-[Noto Sans CJK SC,system-ui,sans-serif]"
+                      >
+                        {post.author}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           ))}
         </div>
