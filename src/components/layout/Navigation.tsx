@@ -68,7 +68,7 @@ export default function Navigation({ items }: NavigationProps) {
   }, [items]);
 
   // 平滑滚动到目标 section
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
     e.stopPropagation();
     const target = document.querySelector(href);
@@ -338,18 +338,17 @@ export default function Navigation({ items }: NavigationProps) {
         <div className="p-5 pt-28">
           <div className="space-y-4">
             {items.map((item) => (
-              <a
+              <button
                 key={item.id}
-                href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                className={`block py-4 px-6 text-[16px] rounded-2xl border transition-all font-[Noto Sans CJK SC,system-ui,sans-serif] ${
+                className={`w-full text-left block py-4 px-6 text-[16px] rounded-2xl border transition-all font-[Noto Sans CJK SC,system-ui,sans-serif] ${
                   activeId === item.id
                     ? 'text-white font-medium bg-white/[0.12] border-white/[0.15]'
                     : 'text-white/70 hover:text-white hover:bg-white/[0.08] border-white/[0.08] hover:border-white/[0.15]'
                 }`}
               >
                 {item.label}
-              </a>
+              </button>
             ))}
           </div>
         </div>
