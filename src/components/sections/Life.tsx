@@ -85,11 +85,11 @@ export default function LifeSection({ posts }: LifeSectionProps) {
         </div>
 
         {/* 瀑布流网格 — 小红书风格 */}
-        <div className="xhs-grid columns-2 md:columns-3 gap-2 md:gap-3">
+        <div className="xhs-grid columns-2 md:columns-3 gap-3 md:gap-4">
           {posts.map((post) => (
             <div
               key={post.id}
-              className="xhs-card break-inside-avoid mb-2 md:mb-3 bg-white rounded-[8px] overflow-hidden
+              className="xhs-card break-inside-avoid mb-3 md:mb-4 bg-white rounded-[8px] overflow-hidden
                 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]
                 transition-all duration-300 cursor-pointer group"
             >
