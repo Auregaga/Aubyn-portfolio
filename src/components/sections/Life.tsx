@@ -32,7 +32,13 @@ export default function LifeSection({ posts }: LifeSectionProps) {
   // 检测窗口宽度决定列数
   useEffect(() => {
     const updateCols = () => {
-      setColCount(window.innerWidth >= 768 ? 3 : 2);
+      if (window.innerWidth >= 1024) {
+        setColCount(4);
+      } else if (window.innerWidth >= 768) {
+        setColCount(3);
+      } else {
+        setColCount(2);
+      }
     };
     updateCols();
     window.addEventListener('resize', updateCols);
@@ -97,7 +103,7 @@ export default function LifeSection({ posts }: LifeSectionProps) {
       id="life"
       className="w-full py-24 md:py-32 bg-[#fafafa] relative"
     >
-      <div className="max-w-[980px] mx-auto px-4 md:px-6">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
         {/* 标题区 */}
         <div className="text-center mb-10 md:mb-14">
           <p className="text-[12px] md:text-[13px] text-[#999] tracking-[0.2em] uppercase mb-3 font-[Noto Sans CJK SC,system-ui,sans-serif]">
