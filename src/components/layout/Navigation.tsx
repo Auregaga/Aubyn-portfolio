@@ -332,20 +332,20 @@ export default function Navigation({ items }: NavigationProps) {
       {/* 移动端侧边栏 */}
       <div
         ref={mobileMenuRef}
-        className="fixed top-0 right-0 bottom-0 w-[75%] max-w-[320px] bg-white z-[60] translate-x-full
-          md:hidden shadow-[-10px_0_40px_rgba(0,0,0,0.1)]"
+        className="fixed top-0 right-0 bottom-0 w-[75%] max-w-[320px] bg-black z-[60] translate-x-full
+          md:hidden shadow-[-10px_0_40px_rgba(0,0,0,0.3)]"
       >
-        <div className="p-6 pt-20">
-          <div className="space-y-1">
+        <div className="p-6 pt-24">
+          <div className="space-y-3">
             {items.map((item) => (
               <a
                 key={item.id}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                className={`block py-3 px-4 text-[16px] rounded-xl transition-colors font-[Noto Sans CJK SC,system-ui,sans-serif] ${
+                className={`block py-4 px-5 text-[16px] rounded-2xl transition-all font-[Noto Sans CJK SC,system-ui,sans-serif] ${
                   activeId === item.id
-                    ? 'text-black font-medium bg-black/[0.04]'
-                    : 'text-[#555555] hover:text-black hover:bg-black/[0.02]'
+                    ? 'text-white font-medium bg-white/[0.12]'
+                    : 'text-white/70 hover:text-white hover:bg-white/[0.06]'
                 }`}
               >
                 {item.label}
