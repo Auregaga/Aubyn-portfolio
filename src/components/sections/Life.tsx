@@ -109,9 +109,9 @@ export default function LifeSection({ posts }: LifeSectionProps) {
         </div>
 
         {/* 瀑布流网格 — 小红书风格，flex 多列布局确保居中 */}
-        <div className="xhs-grid flex justify-center gap-3 md:gap-4">
+        <div className="xhs-grid flex justify-center gap-4 md:gap-5 lg:gap-6">
           {columns.map((col, colIdx) => (
-            <div key={colIdx} className="flex-1 max-w-[300px] flex flex-col gap-3 md:gap-4">
+            <div key={colIdx} className="flex-1 max-w-[300px] flex flex-col gap-4 md:gap-5 lg:gap-6">
               {col.map((post) => (
                 <div
                   key={post.id}

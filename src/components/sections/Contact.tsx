@@ -187,9 +187,9 @@ export default function Contact({ contact }: ContactProps) {
           </div>
 
           {/* 右侧：联系卡片网格 */}
-          <div className="contact-grid lg:w-3/5 flex flex-col gap-4">
+          <div className="contact-grid lg:w-3/5 flex flex-col gap-6">
             {/* 上排 4 个：2x2 网格 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {contactItems.filter(i => i.key !== 'github').map((item) => (
               <div
                 key={item.key}
