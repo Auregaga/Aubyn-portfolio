@@ -50,49 +50,40 @@ export default function LifeSection({ posts }: LifeSectionProps) {
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray('.xhs-card');
-      gsap.from(cards, {
-        opacity: 0,
-        y: 30,
-        duration: 0.6,
-        stagger: 0.06,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: '.xhs-grid',
-          start: 'top 80%',
-          once: true,
-        },
-      });
+    const grid = sectionRef.current.querySelector('.xhs-grid');
+    if (!grid) return;
 
-      // 兜底：如果已经在视口里了，立即播放
-      const grid = document.querySelector('.xhs-grid');
-      if (grid) {
-        const rect = grid.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.8) {
+    // 卡片默认就是可见的（CSS 默认 opacity:1）
+    // 只有 IntersectionObserver 触发时才做入场动画
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          const cards = gsap.utils.toArray('.xhs-card');
+          // 先设为透明，再动画淡入
+          gsap.set(cards, { opacity: 0, y: 16 });
           gsap.to(cards, {
             opacity: 1,
             y: 0,
-            duration: 0.6,
-            stagger: 0.06,
+            duration: 0.5,
+            stagger: { each: 0.04, from: 'random' },
             ease: 'power2.out',
           });
+          observer.disconnect();
         }
-      }
-    }, sectionRef);
+      },
+      { threshold: 0.1 }
+    );
 
-    // 兜底定时器
+    observer.observe(grid);
+
+    // 兜底：0.8秒后强制设为可见（任何异常都不影响显示）
     const fallback = setTimeout(() => {
-      gsap.to('.xhs-card', {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: 'power2.out',
-      });
-    }, 3000);
+      gsap.set('.xhs-card', { opacity: 1, y: 0 });
+    }, 800);
 
     return () => {
-      ctx.revert();
+      observer.disconnect();
       clearTimeout(fallback);
     };
   }, [posts.length]);
